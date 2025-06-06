@@ -9,7 +9,7 @@ Masquerade y DNAT:
 *hecho creo* en R4: falta el MASQUERADE;
 *hecho creo* en Rcasa: el MASQUERADE esta mal;
 Filtrado:
-en R2:falta hacer el filtrado, FORWARE no es una cadena, y estan mezclando cosas en ese reject;
+*hecho creo* en R2:falta hacer el filtrado, FORWARE no es una cadena, y estan mezclando cosas en ese reject;
 en R3:no va ningún tipo de filtro; FORWARE no es una cadena;
 en R4:estan filtrando mal, solo se pide que le den acceso a la empresa1 y rechacen el resto;
 
