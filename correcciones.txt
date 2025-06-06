@@ -15,3 +15,10 @@ en R4:estan filtrando mal, solo se pide que le den acceso a la empresa1 y rechac
 
 //comando a corregir
 iptables -t FILTER -A FORWARD -p tcp -i eth0 -J REJECT
+
+//comando corregido 
+# Rechazar sólo a PC-Admin
+iptables -t filter -A FORWARD -s 10.3.1.130 -j REJECT
+
+# Aceptar el tráfico del resto de la subred
+iptables -t filter -A FORWARD -j ACCEPT
