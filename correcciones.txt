@@ -1,0 +1,14 @@
+Ruteo:
+en R1:desactivar OSPF y ZEBRA,
+en R2: faltan rutas hacia la empresa;
+en R3:falta la ruta hacia router casa, ademas tienen que poner la ruta hacia la empresa1 no hacia sus subredes;
+en R4:falta una ruta hacia la empresa1;
+en Rcasa : falta el default route;
+Masquerade y DNAT:
+en R2: falta el MASQUERADE y el DNAT
+en R4: falta el MASQUERADE;
+en Rcasa: el MASQUERADE esta mal;
+Filtrado:
+en R2:falta hacer el filtrado, FORWARE no es una cadena, y estan mezclando cosas en ese reject;
+en R3:no va ningún tipo de filtro; FORWARE no es una cadena;
+en R4:estan filtrando mal, solo se pide que le den acceso a la empresa1 y rechacen el resto;
