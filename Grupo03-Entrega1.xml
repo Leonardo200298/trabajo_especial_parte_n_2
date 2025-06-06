@@ -167,14 +167,14 @@
       <iface2 id="1" name="eth1" mac="00:00:00:aa:00:04" ip4="201.0.1.1" ip4_mask="24"/>
       <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
     </link>
+    <link node1="21" node2="17">
+      <iface1 id="1" name="eth1" mac="00:00:00:aa:00:18" ip4="10.3.1.1" ip4_mask="26"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:19" ip4="10.3.1.2" ip4_mask="26"/>
+      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
+    </link>
     <link node1="10" node2="15">
       <iface1 id="2" name="eth2" mac="00:00:00:aa:00:0b" ip4="10.3.1.65" ip4_mask="27"/>
       <iface2 id="0" name="veth15.0.1"/>
-      <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
-    </link>
-    <link node1="14" node2="20">
-      <iface1 id="1" name="veth14.1.1"/>
-      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:17" ip4="10.3.1.114" ip4_mask="29"/>
       <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
     </link>
     <link node1="9" node2="10">
@@ -202,9 +202,9 @@
       <iface2 id="0" name="eth0" mac="00:00:00:aa:00:13" ip4="10.3.1.66" ip4_mask="27"/>
       <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
     </link>
-    <link node1="21" node2="17">
-      <iface1 id="1" name="eth1" mac="00:00:00:aa:00:18" ip4="10.3.1.1" ip4_mask="26"/>
-      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:19" ip4="10.3.1.2" ip4_mask="26"/>
+    <link node1="14" node2="20">
+      <iface1 id="1" name="veth14.1.1"/>
+      <iface2 id="0" name="eth0" mac="00:00:00:aa:00:17" ip4="10.3.1.114" ip4_mask="29"/>
       <options delay="0" bandwidth="0" loss="0.0" dup="0" jitter="0" unidirectional="0" buffer="0"/>
     </link>
     <link node1="10" node2="21">
@@ -236,8 +236,8 @@ ip route add 10.3.1.160/27 via 10.2.1.131 dev eth0
 ip route add 10.3.0.0/24 via 10.3.1.131 dev eth0
 ip route add 10.3.1.0/25 via 10.3.1.131 dev eth0
 ip route add default via 201.0.0.1 dev eth1
-iptables -t FILTER -A FORWARD -p tcp -i eth1 -J ACCEPT
-iptables -t FILTER -A FORWARD -d 10.3.1.130/28 -J REJECT
+iptables -t FILTER -A FORWARD -J REJECT
+iptables -t FILTER -A FORWARD -s 10.3.1.0/25 -J ACCEPT
 iptables -t NAT -A POSTROUTING -o eth0 -J MASQUERADE]]></template>
       </templates>
     </service>
@@ -250,7 +250,8 @@ ip route add default via 201.0.1.1 dev eth0
 
 iptables -t NAT -A POSTROUTING -o eth1 -j MASQUERADE
 iptables -t NAT -A PREROUTING -d 201.0.0.6 -p tcp --dport 80 -J DNAT --to-destination 10.3.0.1:80
-iptables -t FILTER -A FORWARD -p tcp -i eth0 -J REJECT]]></template>
+iptables -t filter -A FORWARD -s 10.3.1.130 -j REJECT
+iptables -t filter -A FORWARD -j ACCEPT]]></template>
       </templates>
     </service>
     <service name="StaticRoute" node="8">
@@ -260,9 +261,7 @@ ip route add 10.3.1.112/29 via 10.3.1.162 dev eth2
 ip route add 10.3.1.64/27 via 10.3.1.162 dev eth2
 ip route add 10.3.1.120/30 via 10.3.1.162 dev eth2
 ip route add 10.3.1.128/25 dev eth2
-ip route add default via 10.3.1.129 dev eth0
-iptables -t FILTER -A FORWARD -p tcp -i eth0 -J ACCEPT
-iptables -t FILTER -A FORWARD -p tcp -o eth1 -s 201.0.0.1/24 -J REJECT]]></template>
+ip route add default via 10.3.1.129 dev eth0]]></template>
       </templates>
     </service>
     <service name="StaticRoute" node="10">
@@ -315,7 +314,7 @@ ip route add default via 10.3.1.121 dev eth0]]></template>
     <configuration name="checksums" value="0"/>
   </session_options>
   <session_metadata>
-    <configuration name="shapes" value="[{&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [571.5756692552915, 0.8742572543074127, 1000.4638555619612, 123.73285229007104], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#ffa3f0&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [114.97579832636947, 108.5981161790964, 114.97579832636947, 108.5981161790964], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 1, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [116.15106249198018, 122.1954314915264, 276.9841323569782, 367.9126215630501], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#5ecfff&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [271.53685301579935, 122.2032759648145, 620.0085043899674, 363.45288076231407], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#cfffff&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [742.6715293272777, 314.10703878437664, 742.6715293272777, 314.10703878437664], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 1, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [170.82061425171648, 363.25047679868135, 400.9012558641527, 591.0973257740985], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#ff00ff&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [387.77177292228055, 361.1659675594812, 937.2847616277033, 705.1700336596169], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#cfcf57&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [343.9084722436364, 54.34122358762269, 343.9084722436364, 54.34122358762269], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 1, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}]"/>
+    <configuration name="shapes" value="[{&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [571.5756692552912, 0.8742572543074244, 1000.463855561961, 123.73285229007102], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#ffa3f0&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [114.9757983263695, 108.59811617909637, 114.9757983263695, 108.59811617909637], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 1, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [116.15106249198016, 122.1954314915264, 276.9841323569781, 367.91262156305], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#5ecfff&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [271.53685301579947, 122.20327596481448, 620.0085043899672, 363.452880762314], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#cfffff&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [742.6715293272775, 314.1070387843767, 742.6715293272775, 314.1070387843767], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 1, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [170.8206142517165, 363.2504767986813, 400.9012558641527, 591.0973257740983], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#ff00ff&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [387.77177292228043, 361.16596755948115, 937.2847616277031, 705.1700336596168], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;#cfcf57&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 0, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}, {&quot;canvas&quot;: 1, &quot;type&quot;: &quot;rectangle&quot;, &quot;iconcoords&quot;: [343.9084722436363, 54.34122358762268, 343.9084722436363, 54.34122358762268], &quot;label&quot;: &quot;&quot;, &quot;fontfamily&quot;: &quot;Arial&quot;, &quot;fontsize&quot;: 12, &quot;labelcolor&quot;: &quot;#000000&quot;, &quot;color&quot;: &quot;&quot;, &quot;border&quot;: &quot;#000000&quot;, &quot;width&quot;: 1, &quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false}]"/>
     <configuration name="edges" value="[]"/>
     <configuration name="hidden" value="[]"/>
     <configuration name="canvas" value="{&quot;gridlines&quot;: true, &quot;canvases&quot;: [{&quot;id&quot;: 1, &quot;wallpaper&quot;: null, &quot;wallpaper_style&quot;: 1, &quot;fit_image&quot;: false, &quot;dimensions&quot;: [1000, 750]}]}"/>
