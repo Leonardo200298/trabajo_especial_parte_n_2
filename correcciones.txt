@@ -10,15 +10,29 @@ Masquerade y DNAT:
 *hecho creo* en Rcasa: el MASQUERADE esta mal;
 Filtrado:
 *hecho creo* en R2:falta hacer el filtrado, FORWARE no es una cadena, y estan mezclando cosas en ese reject;
-en R3:no va ningún tipo de filtro; FORWARE no es una cadena;
-en R4:estan filtrando mal, solo se pide que le den acceso a la empresa1 y rechacen el resto;
+*hecho creo* en R3:no va ningún tipo de filtro; FORWARE no es una cadena;
+*hecho creo* en R4:estan filtrando mal, solo se pide que le den acceso a la empresa1 y rechacen el resto;
 
-//comando a corregir
-iptables -t FILTER -A FORWARD -p tcp -i eth0 -J REJECT
+//correciones resueltas
+rCasa: no estaba la ruta por default y el masquerade estaba mal echo
+ip route add default via 201.0.2.1
+iptables -t NAT -A POSTROUTING -o eth1 -J MASQUERADE
+r4: iptables y ruteo
+ip route add 10.3.1.160/27 via 10.2.1.131 dev eth0
+ip route add 10.3.0.0/24 via 10.3.1.131 dev eth0
+ip route add 10.3.1.0/25 via 10.3.1.131 dev eth0
+ip route add default via 201.0.0.1 dev eth1
+iptables -t FILTER -A FORWARD -J REJECT
+iptables -t FILTER -A FORWARD -s 10.3.1.0/25 -J ACCEPT
+iptables -t NAT -A POSTROUTING -o eth0 -J MASQUERADE
+r2: iptables y fijense de ruteo
+ip route add 10.3.1.160/27 via 10.3.0.2 dev eth1
+ip route add 10.3.1.128/28 via 10.3.0.2 dev eth1
+ip route add default via 201.0.1.1 dev eth0
 
-//comando corregido 
-# Rechazar sólo a PC-Admin
+iptables -t NAT -A POSTROUTING -o eth1 -j MASQUERADE
+iptables -t NAT -A PREROUTING -d 201.0.0.6 -p tcp --dport 80 -J DNAT --to-destination 10.3.0.1:80
 iptables -t filter -A FORWARD -s 10.3.1.130 -j REJECT
-
-# Aceptar el tráfico del resto de la subred
 iptables -t filter -A FORWARD -j ACCEPT
+
+r3: eliminamos filtrados
